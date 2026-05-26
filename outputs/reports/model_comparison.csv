@@ -1,0 +1,11 @@
+model_name,accuracy,precision,recall,f1_score,task,model,mae,mse,rmse,r2,history
+random_forest,0.6517412935323383,0.6795024600677189,0.6517412935323383,0.6250996923778056,classification,RandomForestClassifier(random_state=42),,,,,
+knn,0.5870646766169154,0.585172336311145,0.5870646766169154,0.5733663671762078,classification,KNeighborsClassifier(),,,,,
+deep_nn,0.5870646766169154,0.5907482455273302,0.5870646766169154,0.5592584100046787,classification,"<Sequential name=sequential_1, built=True>",,,,,<keras.src.callbacks.history.History object at 0x000002A069A76F90>
+logistic_regression,0.5771144278606966,0.5866124656022439,0.5771144278606966,0.5312534816130888,classification,"LogisticRegression(max_iter=1000, random_state=42)",,,,,
+shallow_nn,0.5621890547263682,0.557444337158799,0.5621890547263682,0.542994501178319,classification,"<Sequential name=sequential, built=True>",,,,,<keras.src.callbacks.history.History object at 0x000002A06679E510>
+decision_tree,0.527363184079602,0.5243425728500355,0.527363184079602,0.5247997301627455,classification,DecisionTreeClassifier(random_state=42),,,,,
+decision_tree,,,,,regression,DecisionTreeRegressor(random_state=42),777199.0049751244,1031768194029.8507,1015759.9096390104,-0.6247703689116246,
+random_forest,,,,,regression,RandomForestRegressor(random_state=42),529320.7462686567,439910925529.85077,663257.8122644699,0.30725308175112165,
+linear_regression,,,,,regression,LinearRegression(),618727.5101432313,614602134715.9865,783965.6463876376,0.03215921663943577,
+knn,,,,,regression,KNeighborsRegressor(),616045.7711442786,609200746268.6567,780513.1301065068,0.04066501857342042,
