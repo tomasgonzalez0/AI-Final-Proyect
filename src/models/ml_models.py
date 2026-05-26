@@ -109,6 +109,30 @@ class MLModelTrainer:
             logger.error("Failed training logistic regression")
             raise ValueError("Failed training logistic regression") from exc
 
+    def train_linear_regression(self, X_train: Any, y_train: Any) -> Any:
+        """
+        Train a Linear Regression model for regression.
+
+        Args:
+            X_train (Any): Training features.
+            y_train (Any): Training labels.
+
+        Returns:
+            Any: Fitted Linear Regression model.
+        """
+        model = LinearRegression()
+        model_name = "linear_regression"
+        task = "regression"
+
+        try:
+            logger.info("Training linear regression")
+            model.fit(X_train, y_train)
+            self._save_model(model, model_name, task)
+            return model
+        except ValueError as exc:
+            logger.error("Failed training linear regression")
+            raise ValueError("Failed training linear regression") from exc
+
     def train_knn(self, X_train: Any, y_train: Any, task: str) -> Any:
         """
         Train a KNN model for classification or regression.

@@ -53,6 +53,7 @@ from src.utils.config import (
     NUMERIC_COLUMNS,
     REPORTS_DIR,
     TARGET_CLASSIFICATION_BINARY,
+    TARGET_CLASSIFICATION_MULTI,
     TARGET_REGRESSION,
 )
 from src.utils.logger import get_logger
@@ -144,8 +145,11 @@ def _prepare_transformed_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str,
     """
     df_features = create_features(df)
     engineered_cols = ["categoria_consumo", "nivel_demora", "cliente_premium"]
+    target_cols = [TARGET_CLASSIFICATION_BINARY, TARGET_CLASSIFICATION_MULTI]
     categorical_cols = [
-        col for col in CATEGORICAL_COLUMNS + engineered_cols if col in df_features.columns
+        col
+        for col in CATEGORICAL_COLUMNS + engineered_cols + target_cols
+        if col in df_features.columns
     ]
 
     df_encoded, encoders = apply_label_encoding(df_features, categorical_cols)
@@ -170,8 +174,15 @@ def _train_and_evaluate_classification(df: pd.DataFrame) -> None:
         None: This function returns None.
     """
     trainer = MLModelTrainer()
+    df_model = df.drop(
+        columns=[
+            col
+            for col in [TARGET_CLASSIFICATION_MULTI, TARGET_REGRESSION]
+            if col in df.columns
+        ]
+    )
     X_train, X_test, y_train, y_test = prepare_for_modeling(
-        df,
+        df_model,
         TARGET_CLASSIFICATION_BINARY,
     )
 
@@ -204,12 +215,19 @@ def _train_and_evaluate_regression(df: pd.DataFrame) -> None:
         None: This function returns None.
     """
     trainer = MLModelTrainer()
-    X_train, X_test, y_train, y_test = prepare_for_modeling(df, TARGET_REGRESSION)
+    df_model = df.drop(
+        columns=[
+            col
+            for col in [TARGET_CLASSIFICATION_BINARY, TARGET_CLASSIFICATION_MULTI]
+            if col in df.columns
+        ]
+    )
+    X_train, X_test, y_train, y_test = prepare_for_modeling(df_model, TARGET_REGRESSION)
 
     models = [
         ("decision_tree", lambda: trainer.train_decision_tree(X_train, y_train, "regression")),
         ("random_forest", lambda: trainer.train_random_forest(X_train, y_train, "regression")),
-        ("linear_regression", lambda: trainer.train_logistic_regression(X_train, y_train)),
+        ("linear_regression", lambda: trainer.train_linear_regression(X_train, y_train)),
         ("knn", lambda: trainer.train_knn(X_train, y_train, "regression")),
     ]
 
@@ -234,8 +252,15 @@ def _train_and_evaluate_neural_networks(df: pd.DataFrame) -> None:
     Returns:
         None: This function returns None.
     """
+    df_model = df.drop(
+        columns=[
+            col
+            for col in [TARGET_CLASSIFICATION_MULTI, TARGET_REGRESSION]
+            if col in df.columns
+        ]
+    )
     X_train, X_test, y_train, y_test = prepare_for_modeling(
-        df,
+        df_model,
         TARGET_CLASSIFICATION_BINARY,
     )
 
@@ -262,7 +287,7 @@ def _train_and_evaluate_neural_networks(df: pd.DataFrame) -> None:
             results["model"] = model
             results["history"] = history
             app_state["results"].append(results)
-        except (ValueError, RuntimeError) as exc:
+        except (ValueError, RuntimeError, ModuleNotFoundError) as exc:
             logger.error(f"Neural network training failed for {name}: {exc}")
 
 
@@ -280,8 +305,15 @@ def _generate_visualizations(df: pd.DataFrame) -> None:
     plot_correlation_heatmap(df)
 
     trainer = MLModelTrainer()
+    df_model = df.drop(
+        columns=[
+            col
+            for col in [TARGET_CLASSIFICATION_MULTI, TARGET_REGRESSION]
+            if col in df.columns
+        ]
+    )
     X_train, X_test, y_train, y_test = prepare_for_modeling(
-        df,
+        df_model,
         TARGET_CLASSIFICATION_BINARY,
     )
 
@@ -448,7 +480,7 @@ def main() -> None:
                 best = _select_best_model(app_state["results"])
                 if best is not None:
                     app_state["best_model"] = best
-            except (ValueError, RuntimeError) as exc:
+            except (ValueError, RuntimeError, ModuleNotFoundError) as exc:
                 logger.error(f"Neural network training failed: {exc}")
                 print(f"Error: {exc}")
 
