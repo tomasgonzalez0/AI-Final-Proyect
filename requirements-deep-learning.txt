@@ -1,0 +1,5 @@
+﻿# Optional deep learning dependencies
+# NOTE: TensorFlow wheels are not available for all Python versions.
+# If this install fails, use Python 3.12 and rerun.
+
+tensorflow>=2.13.0

@@ -254,15 +254,12 @@ Implement modules strictly in this order. Each module must be complete and teste
 
 ---
 
-## Dependencies (requirements.txt content)
+## Dependencies
 
-```
-pandas>=2.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-tensorflow>=2.13.0
-matplotlib>=3.7.0
-seaborn>=0.12.0
-openpyxl>=3.1.0
-joblib>=1.3.0
-```
+Core (recommended for most of the project):
+
+- `requirements.txt`
+
+Optional (only needed for `src/models/deep_learning.py`):
+
+- `requirements-deep-learning.txt`
