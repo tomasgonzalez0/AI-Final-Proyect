@@ -68,25 +68,21 @@ Implement modules strictly in this order. Each module must be complete and teste
 ### Phase 1 - Data Layer
 
 **Module 1: `utils/config.py`**
-
 - Define all constants: file paths, random seed (42), test split ratio (0.2)
 - Define target variable names per task
 - No external dependencies
 
 **Module 2: `utils/logger.py`**
-
 - Simple logging wrapper using Python `logging` module
 - Format: `[LEVEL] YYYY-MM-DD HH:MM:SS - message`
 - No emojis, no special characters
 
 **Module 3: `data/loader.py`**
-
 - Function `load_excel(filepath) -> pd.DataFrame`
 - Function `display_dataset_info(df)`: shape, dtypes, head(10), describe()
 - Raise `FileNotFoundError` with clear message if file is missing
 
 **Module 4: `data/cleaner.py`**
-
 - Function `clean_dataset(df) -> pd.DataFrame` that runs the full pipeline:
   - `standardize_city_names(df)`: lowercase then title-case column `ciudad`
   - `fix_negative_values(df)`: set negative `tiempo_preparacion` and `valor_total` to NaN
@@ -98,7 +94,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 - Return the cleaned DataFrame and a dict `cleaning_report` with counts
 
 **Module 5: `data/transformer.py`**
-
 - Function `apply_minmax_scaling(df, columns) -> df`
 - Function `apply_zscore_scaling(df, columns) -> df`
 - Function `apply_one_hot_encoding(df, columns) -> df`
@@ -116,7 +111,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 ### Phase 2 - Models Layer
 
 **Module 6: `models/ml_models.py`**
-
 - Class `MLModelTrainer` with methods:
   - `train_decision_tree(X_train, y_train, task) -> model`
   - `train_random_forest(X_train, y_train, task) -> model`
@@ -128,7 +122,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 - Save each trained model to `outputs/models/` using `joblib`
 
 **Module 7: `models/deep_learning.py`**
-
 - Function `build_shallow_nn(input_dim, output_units, task) -> model`
   - Architecture: Input -> Dense(64, relu) -> Dense(output)
 - Function `build_deep_nn(input_dim, output_units, task) -> model`
@@ -141,7 +134,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 - Save model to `outputs/models/` as `.h5`
 
 **Module 8: `models/evaluator.py`**
-
 - Function `evaluate_classification(y_true, y_pred, model_name) -> dict`
   - Metrics: accuracy, precision (weighted), recall (weighted), f1 (weighted)
   - Print confusion matrix to console
@@ -150,7 +142,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 - Function `print_metrics_table(results_list)`: formatted console table
 
 **Module 9: `models/comparator.py`**
-
 - Function `compare_all_models(results_list) -> pd.DataFrame`
   - Accepts list of dicts from evaluator functions
   - Returns DataFrame sorted by main metric (accuracy or R2)
@@ -161,7 +152,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 ### Phase 3 - Visualization Layer
 
 **Module 10: `visualization/plots.py`**
-
 - All functions save PNG to `outputs/plots/` AND show with `plt.show()`
 - Function `plot_data_distribution(df)`: histograms for numeric columns
 - Function `plot_correlation_heatmap(df)`: seaborn heatmap
@@ -177,7 +167,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 ### Phase 4 - Application Entry Point
 
 **Module 11: `src/main.py`**
-
 - Menu-driven CLI with numbered options:
   ```
   === FoodVision AI - Restaurant Intelligence System ===
@@ -203,7 +192,6 @@ Implement modules strictly in this order. Each module must be complete and teste
 
 1. **No emojis or special characters** in any string, comment, log, or print statement
 2. **Docstrings on every function** using Google style:
-
    ```python
    def function_name(param):
        """
@@ -216,7 +204,6 @@ Implement modules strictly in this order. Each module must be complete and teste
            type: Description.
        """
    ```
-
 3. **Type hints on all function signatures**
 4. **Constants in config.py** - no magic numbers inline
 5. **Imports grouped**: stdlib, then third-party, then local - separated by blank line
@@ -228,32 +215,32 @@ Implement modules strictly in this order. Each module must be complete and teste
 
 ## Target Variables Per Task
 
-| Task                          | Target Column          | Type                         |
-| ----------------------------- | ---------------------- | ---------------------------- |
-| Predict delivery delay        | `demora_entrega`       | Classification (binary)      |
+| Task | Target Column | Type |
+|------|--------------|------|
+| Predict delivery delay | `demora_entrega` | Classification (binary) |
 | Predict customer satisfaction | `satisfaccion_cliente` | Classification (multi-class) |
-| Predict daily sales           | `ventas_dia`           | Regression                   |
+| Predict daily sales | `ventas_dia` | Regression |
 
 ---
 
 ## Dataset Column Reference
 
-| Column               | Type    | Notes                                  |
-| -------------------- | ------- | -------------------------------------- |
-| id_pedido            | int     | Identifier, drop before modeling       |
-| ciudad               | str     | Categorical - standardize case         |
-| tipo_comida          | str     | Categorical - encode                   |
-| hora_pedido          | int/str | May need extraction (hour of day)      |
-| cantidad_productos   | int     | Numeric                                |
-| valor_total          | float   | Numeric - check negatives              |
-| tiempo_preparacion   | int     | Numeric - check negatives and outliers |
-| metodo_pago          | str     | Categorical - encode                   |
-| cliente_frecuente    | str     | Binary Yes/No                          |
-| calificacion_cliente | int     | 1-5 range validation                   |
-| clima                | str     | Categorical - encode                   |
-| demora_entrega       | str     | Target for classification              |
-| satisfaccion_cliente | str     | Target for classification              |
-| ventas_dia           | float   | Target for regression                  |
+| Column | Type | Notes |
+|--------|------|-------|
+| id_pedido | int | Identifier, drop before modeling |
+| ciudad | str | Categorical - standardize case |
+| tipo_comida | str | Categorical - encode |
+| hora_pedido | int/str | May need extraction (hour of day) |
+| cantidad_productos | int | Numeric |
+| valor_total | float | Numeric - check negatives |
+| tiempo_preparacion | int | Numeric - check negatives and outliers |
+| metodo_pago | str | Categorical - encode |
+| cliente_frecuente | str | Binary Yes/No |
+| calificacion_cliente | int | 1-5 range validation |
+| clima | str | Categorical - encode |
+| demora_entrega | str | Target for classification |
+| satisfaccion_cliente | str | Target for classification |
+| ventas_dia | float | Target for regression |
 
 ---
 
